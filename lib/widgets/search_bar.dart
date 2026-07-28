@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 class MovieSearchBar extends StatelessWidget {
 
 
-  final Function(String) onChanged;
+  final ValueChanged<String> onChanged;
 
 
   const MovieSearchBar({
+
     super.key,
+
     required this.onChanged,
+
   });
 
 
@@ -20,24 +23,38 @@ class MovieSearchBar extends StatelessWidget {
 
     return TextField(
 
+
       onChanged: onChanged,
 
-      decoration: const InputDecoration(
+
+      decoration: InputDecoration(
+
 
         hintText: "Rechercher un film",
 
+
         prefixIcon:
-        Icon(Icons.search),
+        const Icon(Icons.search),
+
+
+        filled:true,
+
 
         border:
-        OutlineInputBorder(),
+        OutlineInputBorder(
+
+          borderRadius:
+          BorderRadius.circular(15),
+
+        ),
+
 
       ),
+
 
     );
 
 
   }
-
 
 }

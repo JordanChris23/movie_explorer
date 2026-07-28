@@ -2,93 +2,191 @@ import 'package:flutter/material.dart';
 
 import '../data/movie_data.dart';
 import '../widgets/movie_card.dart';
+import '../widgets/movie_search_bar.dart';
+
 
 class MoviesScreen extends StatefulWidget {
-  const MoviesScreen({super.key});
 
-  @override
-  State<MoviesScreen> createState() => _MoviesScreenState();
+
+ const MoviesScreen({super.key});
+
+
+ @override
+ State<MoviesScreen> createState()
+ => _MoviesScreenState();
+
 }
 
-class _MoviesScreenState extends State<MoviesScreen> {
-
-  String search = '';
-
-  @override
-  Widget build(BuildContext context) {
-
-    final filteredMovies = movies.where((movie) {
-      return movie.title
-          .toLowerCase()
-          .contains(search.toLowerCase());
-    }).toList();
 
 
-    return Scaffold(
-
-      appBar: AppBar(
-        title: const Text("Liste des films"),
-      ),
+class _MoviesScreenState
+extends State<MoviesScreen>{
 
 
-      body: Column(
-
-        children: [
-
-          Padding(
-            padding: const EdgeInsets.all(12),
-
-            child: TextField(
-
-              decoration: const InputDecoration(
-
-                labelText: "Rechercher un film",
-
-                border: OutlineInputBorder(),
-
-                prefixIcon: Icon(Icons.search),
-
-              ),
-
-
-              onChanged: (value){
-
-                setState(() {
-
-                  search = value;
-
-                });
-
-              },
-
-            ),
-          ),
+ List filteredMovies = [];
 
 
 
-          Expanded(
+ @override
+ void initState(){
 
-            child: ListView.builder(
+ super.initState();
 
-              itemCount: filteredMovies.length,
+ filteredMovies =
+ movieList;
+
+ }
 
 
-              itemBuilder: (context,index){
 
-                return MovieCard(
+ void searchMovie(String value){
 
-                  movie: filteredMovies[index],
 
-                );
+ setState((){
 
-              },
 
-            ),
+ if(value.isEmpty){
 
-          ),
+ filteredMovies =
+ movieList;
 
-        ],
-      ),
-    );
-  }
+ }
+
+
+ else{
+
+
+ filteredMovies =
+ movieList.where(
+
+ (movie)=>
+
+ movie.title
+ .toLowerCase()
+ .contains(
+ value.toLowerCase(),
+ ),
+
+
+ ).toList();
+
+
+ }
+
+
+ });
+
+
+ }
+
+
+
+ @override
+ Widget build(BuildContext context){
+
+
+ return Scaffold(
+
+
+ appBar: AppBar(
+
+ title:
+ const Text("Films"),
+
+ ),
+
+
+
+ body: Padding(
+
+
+ padding:
+ const EdgeInsets.all(16),
+
+
+
+ child: Column(
+
+
+ children:[
+
+
+
+ MovieSearchBar(
+
+ onChanged:
+ searchMovie,
+
+ ),
+
+
+
+ const SizedBox(height:20),
+
+
+
+ Expanded(
+
+
+ child: GridView.builder(
+
+
+ gridDelegate:
+ const SliverGridDelegateWithFixedCrossAxisCount(
+
+ crossAxisCount:2,
+
+ childAspectRatio:0.65,
+
+ crossAxisSpacing:10,
+
+ mainAxisSpacing:10,
+
+ ),
+
+
+
+ itemCount:
+ filteredMovies.length,
+
+
+
+ itemBuilder:(context,index){
+
+
+ return MovieCard(
+
+ movie:
+ filteredMovies[index],
+
+ );
+
+
+ },
+
+
+ ),
+
+
+
+ ),
+
+
+
+ ],
+
+
+ ),
+
+
+ ),
+
+
+
+ );
+
+
+ }
+
+
 }

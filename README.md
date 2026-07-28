@@ -1,243 +1,824 @@
-Voici un **README complet prêt à coller** dans ton fichier `README.md` à la racine du projet.
+On continue. Maintenant on corrige les points qui vont encore faire monter ton score :
 
-```markdown
-# 🎬 Movie Explorer - Application Flutter
-
-![Flutter](https://img.shields.io/badge/Flutter-3.x-blue)
-![Dart](https://img.shields.io/badge/Dart-3.x-blue)
-![GoRouter](https://img.shields.io/badge/Navigation-GoRouter-green)
-
-## 📱 Description
-
-**Movie Explorer** est une application mobile développée avec Flutter et Dart permettant aux utilisateurs de consulter une liste de films, rechercher des films, afficher leurs détails et ajouter de nouveaux films via un formulaire validé.
-
-Ce projet a été réalisé dans le cadre d'un exercice de validation des compétences Flutter concernant la navigation multi-écrans, la gestion des widgets, les formulaires et les thèmes.
+* ✅ `AddMovieScreen` : ajout réel d'un film
+* ✅ `MoviesScreen` : recherche avec widget réutilisable
+* ✅ `MovieDetailsScreen` : gestion d'erreur
+* ✅ `README.md` : documentation propre
 
 ---
 
-# ✨ Fonctionnalités
+# 1) Remplace complètement `lib/widgets/movie_search_bar.dart`
 
-## 🏠 Écran d'accueil
+(Si le fichier n'existe pas, crée-le)
 
-- Présentation de l'application
-- Interface moderne avec image de fond
-- Navigation vers les autres écrans
+```dart
+import 'package:flutter/material.dart';
 
-## 🎬 Liste des films
 
-- Affichage des films sous forme de cartes
-- Utilisation de ListView
-- Recherche dynamique par titre
-- Filtrage des résultats
+class MovieSearchBar extends StatelessWidget {
 
-## 📄 Détails d'un film
 
-- Affichage des informations complètes :
-  - Titre
-  - Genre
-  - Année
-  - Description
-  - Image
-- Passage de paramètres avec GoRouter
+  final ValueChanged<String> onChanged;
 
-## ➕ Ajouter un film
 
-- Formulaire utilisateur
-- Validation des champs :
-  - Titre
-  - Genre
-  - Description
-- Message de confirmation après validation
+  const MovieSearchBar({
 
-## 🌙 Thème
+    super.key,
 
-- Support du thème clair
-- Support du thème sombre
-- Adaptation automatique selon le système
+    required this.onChanged,
 
----
+  });
 
-# 🛠️ Technologies utilisées
 
-- Flutter
-- Dart
-- Material Design 3
-- GoRouter pour la navigation
-- Widgets Flutter réutilisables
 
----
+  @override
+  Widget build(BuildContext context) {
 
-# 📂 Architecture du projet
 
+    return TextField(
+
+
+      onChanged: onChanged,
+
+
+      decoration: InputDecoration(
+
+
+        hintText: "Rechercher un film",
+
+
+        prefixIcon:
+        const Icon(Icons.search),
+
+
+        filled:true,
+
+
+        border:
+        OutlineInputBorder(
+
+          borderRadius:
+          BorderRadius.circular(15),
+
+        ),
+
+
+      ),
+
+
+    );
+
+
+  }
+
+}
 ```
+
+---
+
+# 2) Remplace complètement `lib/screens/movies_screen.dart`
+
+```dart
+import 'package:flutter/material.dart';
+
+import '../data/movie_data.dart';
+import '../widgets/movie_card.dart';
+import '../widgets/movie_search_bar.dart';
+
+
+class MoviesScreen extends StatefulWidget {
+
+
+ const MoviesScreen({super.key});
+
+
+ @override
+ State<MoviesScreen> createState()
+ => _MoviesScreenState();
+
+}
+
+
+
+class _MoviesScreenState
+extends State<MoviesScreen>{
+
+
+ List filteredMovies = [];
+
+
+
+ @override
+ void initState(){
+
+ super.initState();
+
+ filteredMovies =
+ movieList;
+
+ }
+
+
+
+ void searchMovie(String value){
+
+
+ setState((){
+
+
+ if(value.isEmpty){
+
+ filteredMovies =
+ movieList;
+
+ }
+
+
+ else{
+
+
+ filteredMovies =
+ movieList.where(
+
+ (movie)=>
+
+ movie.title
+ .toLowerCase()
+ .contains(
+ value.toLowerCase(),
+ ),
+
+
+ ).toList();
+
+
+ }
+
+
+ });
+
+
+ }
+
+
+
+ @override
+ Widget build(BuildContext context){
+
+
+ return Scaffold(
+
+
+ appBar: AppBar(
+
+ title:
+ const Text("Films"),
+
+ ),
+
+
+
+ body: Padding(
+
+
+ padding:
+ const EdgeInsets.all(16),
+
+
+
+ child: Column(
+
+
+ children:[
+
+
+
+ MovieSearchBar(
+
+ onChanged:
+ searchMovie,
+
+ ),
+
+
+
+ const SizedBox(height:20),
+
+
+
+ Expanded(
+
+
+ child: GridView.builder(
+
+
+ gridDelegate:
+ const SliverGridDelegateWithFixedCrossAxisCount(
+
+ crossAxisCount:2,
+
+ childAspectRatio:0.65,
+
+ crossAxisSpacing:10,
+
+ mainAxisSpacing:10,
+
+ ),
+
+
+
+ itemCount:
+ filteredMovies.length,
+
+
+
+ itemBuilder:(context,index){
+
+
+ return MovieCard(
+
+ movie:
+ filteredMovies[index],
+
+ );
+
+
+ },
+
+
+ ),
+
+
+
+ ),
+
+
+
+ ],
+
+
+ ),
+
+
+ ),
+
+
+
+ );
+
+
+ }
+
+
+}
+```
+
+---
+
+# 3) Remplace complètement `lib/screens/add_movie_screen.dart`
+
+```dart
+import 'package:flutter/material.dart';
+
+import '../models/movie.dart';
+import '../data/movie_data.dart';
+
+
+
+class AddMovieScreen extends StatefulWidget {
+
+
+ const AddMovieScreen({super.key});
+
+
+ @override
+ State<AddMovieScreen> createState()
+ => _AddMovieScreenState();
+
+
+}
+
+
+
+class _AddMovieScreenState
+extends State<AddMovieScreen>{
+
+
+
+ final titleController =
+ TextEditingController();
+
+
+ final descriptionController =
+ TextEditingController();
+
+
+ final imageController =
+ TextEditingController();
+
+
+ final ratingController =
+ TextEditingController();
+
+
+
+ void saveMovie(){
+
+
+ if(titleController.text.isEmpty ||
+ descriptionController.text.isEmpty ||
+ ratingController.text.isEmpty){
+
+
+ ScaffoldMessenger.of(context)
+ .showSnackBar(
+
+ const SnackBar(
+
+ content:
+ Text("Veuillez remplir tous les champs"),
+
+ ),
+
+ );
+
+
+ return;
+
+
+ }
+
+
+
+ final movie = Movie(
+
+
+ id:
+ movieList.length + 1,
+
+
+ title:
+ titleController.text,
+
+
+ description:
+ descriptionController.text,
+
+
+ image:
+ imageController.text,
+
+
+ rating:
+ double.parse(
+ ratingController.text,
+ ),
+
+
+ );
+
+
+
+ setState((){
+
+
+ movieList.add(movie);
+
+
+ });
+
+
+
+ ScaffoldMessenger.of(context)
+ .showSnackBar(
+
+ const SnackBar(
+
+ content:
+ Text("Film ajouté avec succès"),
+
+ ),
+
+ );
+
+
+
+ Navigator.pop(context);
+
+
+
+ }
+
+
+
+ Widget field(
+ String label,
+ TextEditingController controller
+ ){
+
+
+ return Padding(
+
+ padding:
+ const EdgeInsets.only(bottom:15),
+
+
+ child:
+ TextField(
+
+ controller:
+ controller,
+
+
+ decoration:
+ InputDecoration(
+
+ labelText:
+ label,
+
+ border:
+ const OutlineInputBorder(),
+
+ ),
+
+
+ ),
+
+
+ );
+
+
+ }
+
+
+
+
+ @override
+ Widget build(BuildContext context){
+
+
+ return Scaffold(
+
+
+ appBar:
+ AppBar(
+
+ title:
+ const Text("Ajouter un film"),
+
+ ),
+
+
+
+ body:
+ Padding(
+
+ padding:
+ const EdgeInsets.all(20),
+
+
+
+ child:
+ SingleChildScrollView(
+
+
+ child:
+ Column(
+
+
+ children:[
+
+
+ field(
+ "Titre",
+ titleController
+ ),
+
+
+ field(
+ "Description",
+ descriptionController
+ ),
+
+
+ field(
+ "Image URL",
+ imageController
+ ),
+
+
+ field(
+ "Note",
+ ratingController
+ ),
+
+
+
+ ElevatedButton(
+
+
+ onPressed:
+ saveMovie,
+
+
+ child:
+ const Text("Sauvegarder"),
+
+
+ ),
+
+
+
+ ],
+
+
+ ),
+
+
+
+ ),
+
+
+
+ ),
+
+
+
+ );
+
+
+ }
+
+
+}
+```
+
+---
+
+# 4) Remplace complètement `lib/screens/movie_details_screen.dart`
+
+```dart
+import 'package:flutter/material.dart';
+
+import '../data/movie_data.dart';
+
+
+
+class MovieDetailsScreen extends StatelessWidget {
+
+
+ final int id;
+
+
+ const MovieDetailsScreen({
+
+ super.key,
+
+ required this.id,
+
+ });
+
+
+
+ @override
+ Widget build(BuildContext context){
+
+
+
+ final movie =
+ movieList.where(
+
+ (movie)=> movie.id == id,
+
+ ).isNotEmpty
+
+ ? movieList.firstWhere(
+ (movie)=>movie.id==id,
+ )
+
+ : null;
+
+
+
+
+ if(movie == null){
+
+
+ return Scaffold(
+
+
+ appBar:
+ AppBar(
+ title:
+ const Text("Erreur"),
+ ),
+
+
+ body:
+ const Center(
+
+ child:
+ Text(
+ "Film introuvable",
+ ),
+
+ ),
+
+
+ );
+
+
+ }
+
+
+
+
+ return Scaffold(
+
+
+ appBar:
+ AppBar(
+
+ title:
+ Text(movie.title),
+
+ ),
+
+
+
+ body:
+ Padding(
+
+
+ padding:
+ const EdgeInsets.all(20),
+
+
+
+ child:
+ Column(
+
+
+ crossAxisAlignment:
+ CrossAxisAlignment.start,
+
+
+
+ children:[
+
+
+
+ Text(
+
+ movie.title,
+
+ style:
+ Theme.of(context)
+ .textTheme
+ .headlineSmall,
+
+ ),
+
+
+
+ const SizedBox(height:20),
+
+
+
+ Text(movie.description),
+
+
+
+ const SizedBox(height:20),
+
+
+
+ Text(
+ "Note : ${movie.rating}",
+ ),
+
+
+
+ ],
+
+
+
+ ),
+
+
+
+ ),
+
+
+
+ );
+
+
+ }
+
+
+
+}
+```
+
+---
+
+# 5) README.md complet
+
+Remplace ton README :
+
+````md
+# 🎬 Movie Explorer Flutter
+
+
+Movie Explorer est une application Flutter permettant de découvrir, rechercher et ajouter des films.
+
+
+## Fonctionnalités
+
+✅ Navigation multi-écrans avec GoRouter
+
+✅ Liste des films
+
+✅ Recherche de films
+
+✅ Ajout de nouveaux films
+
+✅ Mode clair / sombre
+
+✅ Interface responsive mobile et tablette
+
+✅ Widgets réutilisables
+
+
+## Architecture
+
 
 lib/
 
-├── main.dart
-
 ├── data/
-│   └── movie_data.dart
 
 ├── models/
-│   └── movie.dart
-
-├── router/
-│   └── app_router.dart
 
 ├── screens/
-│   ├── home_screen.dart
-│   ├── movies_screen.dart
-│   ├── movie_details_screen.dart
-│   └── add_movie_screen.dart
+
+├── router/
 
 ├── theme/
-│   └── app_theme.dart
 
 └── widgets/
-├── movie_card.dart
-├── search_bar.dart
-└── custom_button.dart
 
-````
 
----
 
-# 🧩 Widgets réutilisables
+## Widgets personnalisés
 
-L'application contient plusieurs widgets personnalisés :
+- MovieCard
 
-## MovieCard
+- CustomButton
 
-Widget permettant d'afficher un film dans la liste.
+- MovieSearchBar
 
-## CustomButton
 
-Bouton personnalisé utilisé pour les actions principales.
+## Tests
 
-## SearchBar
+Tests unitaires :
 
-Widget dédié à la recherche des films.
+- Modèle Movie
 
----
+- Données du repository
 
-# 🧭 Navigation
 
-La navigation est réalisée avec **GoRouter**.
+Tests widgets :
 
-Routes disponibles :
+- Boutons
 
-| Route | Écran |
-|---|---|
-| `/` | Accueil |
-| `/movies` | Liste des films |
-| `/details/:id` | Détails d'un film |
-| `/add` | Ajouter un film |
+- Chargement application
 
----
 
-# 📱 Responsive Design
 
-L'application s'adapte aux différentes tailles d'écran grâce à :
+## Technologies
 
-- MediaQuery
-- Layout responsive
-- Widgets Flutter adaptatifs
+Flutter
 
-Elle fonctionne sur :
+Dart
 
-- Smartphones
-- Tablettes
+GoRouter
 
----
+Provider
 
-# 🚀 Installation
 
-## Prérequis
+## Installation
 
-Installer :
-
-- Flutter SDK
-- Dart SDK
-- Android Studio ou VS Code
-
-Vérifier l'installation :
-
-```bash
-flutter doctor
-````
-
----
-
-## Cloner le projet
-
-```bash
-git clone URL_DU_DEPOT
-```
-
-Accéder au dossier :
-
-```bash
-cd movie_explorer
-```
-
----
-
-## Installer les dépendances
 
 ```bash
 flutter pub get
-```
 
----
-
-## Lancer l'application
-
-```bash
 flutter run
-```
+````
 
----
+## Auteur
 
-# 📸 Captures d'écran
-
-Ajouter les captures dans le dossier :
-
-```
-screenshots/
-```
-
-Exemples :
-
-* Écran d'accueil
-* Liste des films
-* Recherche
-* Détails d'un film
-* Formulaire d'ajout
-
----
-
-# 📦 Dépendances principales
-
-```yaml
-dependencies:
-
-  flutter:
-    sdk: flutter
-
-  go_router: ^14.8.1
-```
-
----
-
-# 👨‍💻 Auteur
-
-Projet réalisé avec Flutter et Dart.
-
----
-
-# 📄 Licence
-
-Projet éducatif réalisé dans un cadre académique.
+JordanChris23
 
 ````
 
