@@ -1,89 +1,157 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
-import '../widgets/custom_button.dart';
+import '../theme/theme_provider.dart';
+
+
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-
-    return Scaffold(
-      body: Stack(
-        children: [
-
-          // Image de fond
-          SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: Image.network(
-              'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba',
-              fit: BoxFit.cover,
-            ),
-          ),
-
-          // Filtre sombre
-          Container(
-            color: Colors.black.withOpacity(0.5),
-          ),
-
-          // Contenu
-          Center(
-            child: Padding(
-              padding: EdgeInsets.all(width > 600 ? 80 : 30),
-
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-
-                children: [
-
-                  const Text(
-                    'Movie Explorer',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  const Text(
-                    'Découvrez vos films préférés',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
-
-                  const SizedBox(height: 40),
 
 
-                  CustomButton(
-                    text: 'Voir les films',
-                    onPressed: () {
-                      context.go('/movies');
-                    },
-                  ),
-
-                  const SizedBox(height: 20),
+ const HomeScreen({super.key});
 
 
-                  CustomButton(
-                    text: 'Ajouter un film',
-                    onPressed: () {
-                      context.go('/add');
-                    },
-                  ),
 
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+ @override
+ Widget build(BuildContext context){
+
+
+ final isDark =
+     Theme.of(context).brightness ==
+     Brightness.dark;
+
+
+
+ return Scaffold(
+
+
+ appBar: AppBar(
+
+
+ title: const Text(
+   "Movie Explorer",
+ ),
+
+
+
+ actions: [
+
+
+ Switch(
+
+ value: isDark,
+
+
+ onChanged: (value){
+
+
+ Provider.of<ThemeProvider>(
+   context,
+   listen:false,
+ )
+ .toggleTheme(value);
+
+
+
+ },
+
+
+ ),
+
+
+ ],
+
+
+ ),
+
+
+
+ body: LayoutBuilder(
+
+
+ builder:(context,constraints){
+
+
+
+ final padding =
+ constraints.maxWidth > 600
+ ? 60.0
+ : 20.0;
+
+
+
+ return Padding(
+
+
+ padding:
+ EdgeInsets.all(padding),
+
+
+
+ child: Column(
+
+
+ mainAxisAlignment:
+ MainAxisAlignment.center,
+
+
+
+ children: [
+
+
+
+ const Icon(
+
+ Icons.movie,
+
+ size:100,
+
+ ),
+
+
+
+ const SizedBox(height:30),
+
+
+
+ Text(
+
+ "Bienvenue dans Movie Explorer",
+
+ style:
+ Theme.of(context)
+ .textTheme
+ .headlineSmall,
+
+ textAlign:
+ TextAlign.center,
+
+ ),
+
+
+
+ ],
+
+
+
+ ),
+
+
+ );
+
+
+
+ },
+
+
+ ),
+
+
+
+ );
+
+
+ }
+
+
 }
