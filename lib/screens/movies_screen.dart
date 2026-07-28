@@ -1,192 +1,182 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-import '../data/movie_data.dart';
+import '../data/movie_repository.dart';
+import '../models/movie.dart';
 import '../widgets/movie_card.dart';
 import '../widgets/movie_search_bar.dart';
 
 
+
 class MoviesScreen extends StatefulWidget {
 
+  const MoviesScreen({super.key});
 
- const MoviesScreen({super.key});
 
-
- @override
- State<MoviesScreen> createState()
- => _MoviesScreenState();
+  @override
+  State<MoviesScreen> createState()
+      => _MoviesScreenState();
 
 }
 
 
 
-class _MoviesScreenState
-extends State<MoviesScreen>{
+class _MoviesScreenState extends State<MoviesScreen>{
 
 
- List filteredMovies = [];
+final MovieRepository repository =
+    MovieRepository();
 
 
+late List<Movie> movieList;
 
- @override
- void initState(){
 
- super.initState();
+List<Movie> filteredMovies=[];
 
- filteredMovies =
- movieList;
 
- }
 
+@override
+void initState(){
 
+super.initState();
 
- void searchMovie(String value){
+movieList =
+repository.getMovies();
 
+filteredMovies =
+movieList;
 
- setState((){
+}
 
 
- if(value.isEmpty){
 
- filteredMovies =
- movieList;
+void searchMovie(String value){
 
- }
+setState((){
 
 
- else{
+filteredMovies =
+movieList.where((movie){
 
+return movie.title
+.toLowerCase()
+.contains(
+value.toLowerCase()
+);
 
- filteredMovies =
- movieList.where(
+}).toList();
 
- (movie)=>
 
- movie.title
- .toLowerCase()
- .contains(
- value.toLowerCase(),
- ),
+});
 
 
- ).toList();
+}
 
 
- }
 
 
- });
+@override
+Widget build(BuildContext context){
 
 
- }
+return Scaffold(
 
 
+appBar:AppBar(
 
- @override
- Widget build(BuildContext context){
+title:
+const Text(
+"Films",
+),
 
+),
 
- return Scaffold(
 
 
- appBar: AppBar(
+body:Padding(
 
- title:
- const Text("Films"),
+padding:
+const EdgeInsets.all(16),
 
- ),
 
+child:Column(
 
+children:[
 
- body: Padding(
 
+MovieSearchBar(
 
- padding:
- const EdgeInsets.all(16),
+onChanged:
+searchMovie,
 
+),
 
 
- child: Column(
 
+const SizedBox(height:20),
 
- children:[
 
 
+Expanded(
 
- MovieSearchBar(
+child:
+ListView.builder(
 
- onChanged:
- searchMovie,
 
- ),
+itemCount:
+filteredMovies.length,
 
 
+itemBuilder:(context,index){
 
- const SizedBox(height:20),
 
+final movie =
+filteredMovies[index];
 
 
- Expanded(
+return GestureDetector(
 
+onTap:(){
 
- child: GridView.builder(
+context.push(
+'/details/${movie.id}'
+);
 
+},
 
- gridDelegate:
- const SliverGridDelegateWithFixedCrossAxisCount(
 
- crossAxisCount:2,
+child:
+MovieCard(
+movie:movie,
+),
 
- childAspectRatio:0.65,
 
- crossAxisSpacing:10,
+);
 
- mainAxisSpacing:10,
 
- ),
+},
 
 
+),
 
- itemCount:
- filteredMovies.length,
 
+),
 
 
- itemBuilder:(context,index){
+],
 
 
- return MovieCard(
+),
 
- movie:
- filteredMovies[index],
 
- );
+),
 
 
- },
 
+);
 
- ),
 
-
-
- ),
-
-
-
- ],
-
-
- ),
-
-
- ),
-
-
-
- );
-
-
- }
+}
 
 
 }

@@ -1,157 +1,191 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
-import '../theme/theme_provider.dart';
-
+import '../providers/theme_provider.dart';
 
 
 class HomeScreen extends StatelessWidget {
 
+  const HomeScreen({super.key});
 
- const HomeScreen({super.key});
 
+  @override
+  Widget build(BuildContext context) {
 
+    final themeProvider =
+        Provider.of<ThemeProvider>(context);
 
- @override
- Widget build(BuildContext context){
 
+    return Scaffold(
 
- final isDark =
-     Theme.of(context).brightness ==
-     Brightness.dark;
+      appBar: AppBar(
 
+        title: const Text(
+          "Movie Explorer",
+        ),
 
+        actions: [
 
- return Scaffold(
+          Switch(
 
+            value: themeProvider.darkMode,
 
- appBar: AppBar(
+            onChanged: (value){
 
+              themeProvider.toggleTheme();
 
- title: const Text(
-   "Movie Explorer",
- ),
+            },
 
+          ),
 
+        ],
 
- actions: [
+      ),
 
 
- Switch(
+      body: LayoutBuilder(
 
- value: isDark,
+        builder:(context,constraints){
 
 
- onChanged: (value){
+          final isTablet =
+              constraints.maxWidth > 600;
 
 
- Provider.of<ThemeProvider>(
-   context,
-   listen:false,
- )
- .toggleTheme(value);
+          return Center(
 
+            child: SingleChildScrollView(
 
+              padding: EdgeInsets.all(
+                isTablet ? 40 : 20,
+              ),
 
- },
 
+              child: Column(
 
- ),
+                mainAxisAlignment:
+                    MainAxisAlignment.center,
 
 
- ],
+                children:[
 
 
- ),
+                  Icon(
 
+                    Icons.movie,
 
+                    size:isTablet ? 140 : 100,
 
- body: LayoutBuilder(
+                    color:
+                    Theme.of(context)
+                    .colorScheme
+                    .primary,
 
+                  ),
 
- builder:(context,constraints){
 
+                  const SizedBox(height:30),
 
 
- final padding =
- constraints.maxWidth > 600
- ? 60.0
- : 20.0;
 
+                  Text(
 
+                    "Bienvenue dans Movie Explorer",
 
- return Padding(
+                    textAlign:TextAlign.center,
 
+                    style:Theme.of(context)
+                    .textTheme
+                    .headlineSmall,
 
- padding:
- EdgeInsets.all(padding),
+                  ),
 
 
 
- child: Column(
+                  const SizedBox(height:20),
 
 
- mainAxisAlignment:
- MainAxisAlignment.center,
 
+                  const Text(
 
+                    "Explorez vos films préférés, "
+                    "consultez les détails et ajoutez "
+                    "vos propres films.",
 
- children: [
+                    textAlign:TextAlign.center,
 
+                  ),
 
 
- const Icon(
 
- Icons.movie,
+                  const SizedBox(height:40),
 
- size:100,
 
- ),
 
+                  SizedBox(
 
+                    width:250,
 
- const SizedBox(height:30),
+                    child:ElevatedButton(
 
+                      onPressed:(){
 
+                        context.push('/movies');
 
- Text(
+                      },
 
- "Bienvenue dans Movie Explorer",
 
- style:
- Theme.of(context)
- .textTheme
- .headlineSmall,
+                      child:const Text(
+                        "Voir les films",
+                      ),
 
- textAlign:
- TextAlign.center,
+                    ),
 
- ),
+                  ),
 
 
 
- ],
+                  const SizedBox(height:15),
 
 
 
- ),
+                  SizedBox(
 
+                    width:250,
 
- );
+                    child:OutlinedButton(
 
+                      onPressed:(){
 
+                        context.push('/add');
 
- },
+                      },
 
 
- ),
+                      child:const Text(
+                        "Ajouter un film",
+                      ),
 
+                    ),
 
+                  ),
 
- );
 
+                ],
 
- }
+              ),
 
+            ),
+
+          );
+
+        },
+
+      ),
+
+    );
+
+  }
 
 }

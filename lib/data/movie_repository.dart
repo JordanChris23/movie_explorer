@@ -1,72 +1,28 @@
 import '../models/movie.dart';
+import 'movie_data.dart';
 
 
 class MovieRepository {
 
-
-  final List<Movie> _movies;
-
-
-
-  MovieRepository(this._movies);
+List<Movie> getMovies(){
+ return movies;
+}
 
 
+Movie? getMovieById(int id){
 
-  List<Movie> get movies => _movies;
+try{
 
+return movies.firstWhere(
+(movie)=>movie.id==id
+);
 
+}catch(e){
 
-  void addMovie(Movie movie) {
+return null;
 
-    _movies.add(movie);
+}
 
-  }
-
-
-
-  Movie? getMovieById(int id) {
-
-
-    for(final movie in _movies){
-
-      if(movie.id == id){
-
-        return movie;
-
-      }
-
-    }
-
-
-    return null;
-
-  }
-
-
-
-  List<Movie> search(String query){
-
-
-    if(query.isEmpty){
-
-      return _movies;
-
-    }
-
-
-
-    return _movies.where(
-
-      (movie) => movie.title
-          .toLowerCase()
-          .contains(
-            query.toLowerCase(),
-          ),
-
-    ).toList();
-
-
-  }
-
+}
 
 }

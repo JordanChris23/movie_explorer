@@ -1,161 +1,166 @@
 import 'package:flutter/material.dart';
 
-import '../data/movie_data.dart';
+import '../data/movie_repository.dart';
+import '../models/movie.dart';
 
 
 
 class MovieDetailsScreen extends StatelessWidget {
 
 
- final int id;
+final int id;
 
 
- const MovieDetailsScreen({
+const MovieDetailsScreen({
 
- super.key,
+super.key,
 
- required this.id,
+required this.id,
 
- });
+});
 
 
 
- @override
- Widget build(BuildContext context){
+@override
+Widget build(BuildContext context){
 
 
+final MovieRepository repository =
+MovieRepository();
 
- final movie =
- movieList.where(
 
- (movie)=> movie.id == id,
 
- ).isNotEmpty
+final Movie? movie =
+repository.getMovieById(id);
 
- ? movieList.firstWhere(
- (movie)=>movie.id==id,
- )
 
- : null;
 
+if(movie == null){
 
+return Scaffold(
 
+appBar:AppBar(
+title:
+const Text("Erreur"),
+),
 
- if(movie == null){
+body:
+const Center(
 
+child:
+Text(
+"Film introuvable",
+),
 
- return Scaffold(
+),
 
+);
 
- appBar:
- AppBar(
- title:
- const Text("Erreur"),
- ),
+}
 
 
- body:
- const Center(
 
- child:
- Text(
- "Film introuvable",
- ),
+return Scaffold(
 
- ),
 
+appBar:AppBar(
 
- );
+title:
+Text(movie.title),
 
+),
 
- }
 
 
+body:
+SingleChildScrollView(
 
+padding:
+const EdgeInsets.all(20),
 
- return Scaffold(
 
+child:
+Column(
 
- appBar:
- AppBar(
+crossAxisAlignment:
+CrossAxisAlignment.start,
 
- title:
- Text(movie.title),
 
- ),
+children:[
 
 
 
- body:
- Padding(
+Image.network(
 
+movie.imageUrl,
 
- padding:
- const EdgeInsets.all(20),
+height:300,
 
+width:double.infinity,
 
+fit:BoxFit.cover,
 
- child:
- Column(
+),
 
 
- crossAxisAlignment:
- CrossAxisAlignment.start,
 
+const SizedBox(height:20),
 
 
- children:[
 
+Text(
 
+movie.title,
 
- Text(
+style:
+Theme.of(context)
+.textTheme
+.headlineMedium,
 
- movie.title,
+),
 
- style:
- Theme.of(context)
- .textTheme
- .headlineSmall,
 
- ),
 
+const SizedBox(height:10),
 
 
- const SizedBox(height:20),
 
+Text(
+"Genre : ${movie.genre}",
+),
 
 
- Text(movie.description),
+Text(
+"Année : ${movie.year}",
+),
 
 
+Text(
+"Note : ${movie.rating}",
+),
 
- const SizedBox(height:20),
 
 
+const SizedBox(height:20),
 
- Text(
- "Note : ${movie.rating}",
- ),
 
 
+Text(movie.description),
 
- ],
 
+],
 
 
- ),
+),
 
 
+),
 
- ),
 
+);
 
 
- );
-
-
- }
-
+}
 
 
 }

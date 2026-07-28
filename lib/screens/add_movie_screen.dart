@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
+import '../data/movie_repository.dart';
 import '../models/movie.dart';
-import '../data/movie_data.dart';
 
 
 
 class AddMovieScreen extends StatefulWidget {
 
 
- const AddMovieScreen({super.key});
+const AddMovieScreen({super.key});
 
 
- @override
- State<AddMovieScreen> createState()
- => _AddMovieScreenState();
+@override
+State<AddMovieScreen> createState()
+=> _AddMovieScreenState();
 
 
 }
@@ -24,250 +24,188 @@ class _AddMovieScreenState
 extends State<AddMovieScreen>{
 
 
+final titleController =
+TextEditingController();
 
- final titleController =
- TextEditingController();
 
+final descriptionController =
+TextEditingController();
 
- final descriptionController =
- TextEditingController();
 
+final MovieRepository repository =
+MovieRepository();
 
- final imageController =
- TextEditingController();
 
 
- final ratingController =
- TextEditingController();
+void save(){
 
 
+if(titleController.text.isEmpty){
 
- void saveMovie(){
+return;
 
+}
 
- if(titleController.text.isEmpty ||
- descriptionController.text.isEmpty ||
- ratingController.text.isEmpty){
 
 
- ScaffoldMessenger.of(context)
- .showSnackBar(
+final movie = Movie(
 
- const SnackBar(
+id:
+DateTime.now()
+.millisecondsSinceEpoch,
 
- content:
- Text("Veuillez remplir tous les champs"),
 
- ),
+title:
+titleController.text,
 
- );
 
+genre:
+"Autre",
 
- return;
 
+year:
+2026,
 
- }
 
+rating:
+0,
 
 
- final movie = Movie(
+imageUrl:
+"https://via.placeholder.com/300",
 
 
- id:
- movieList.length + 1,
+description:
+descriptionController.text,
 
 
- title:
- titleController.text,
+);
 
 
- description:
- descriptionController.text,
 
+repository.getMovies().add(movie);
 
- image:
- imageController.text,
 
 
- rating:
- double.parse(
- ratingController.text,
- ),
+ScaffoldMessenger.of(context)
+.showSnackBar(
 
+const SnackBar(
 
- );
+content:
+Text(
+"Film ajouté"
+),
 
+),
 
+);
 
- setState((){
 
 
- movieList.add(movie);
+Navigator.pop(context);
 
 
- });
+}
 
 
 
- ScaffoldMessenger.of(context)
- .showSnackBar(
+@override
+Widget build(BuildContext context){
 
- const SnackBar(
 
- content:
- Text("Film ajouté avec succès"),
+return Scaffold(
 
- ),
 
- );
+appBar:
+AppBar(
 
+title:
+const Text(
+"Ajouter un film"
+),
 
+),
 
- Navigator.pop(context);
 
 
+body:
+Padding(
 
- }
+padding:
+const EdgeInsets.all(20),
 
 
 
- Widget field(
- String label,
- TextEditingController controller
- ){
+child:
+Column(
 
+children:[
 
- return Padding(
 
- padding:
- const EdgeInsets.only(bottom:15),
+TextField(
 
+controller:titleController,
 
- child:
- TextField(
+decoration:
+const InputDecoration(
 
- controller:
- controller,
+labelText:
+"Titre",
 
+),
 
- decoration:
- InputDecoration(
+),
 
- labelText:
- label,
 
- border:
- const OutlineInputBorder(),
 
- ),
+TextField(
 
+controller:
+descriptionController,
 
- ),
+decoration:
+const InputDecoration(
 
+labelText:
+"Description",
 
- );
+),
 
+),
 
- }
 
 
+const SizedBox(height:20),
 
 
- @override
- Widget build(BuildContext context){
 
+ElevatedButton(
 
- return Scaffold(
+onPressed:save,
 
 
- appBar:
- AppBar(
+child:
+const Text(
+"Sauvegarder"
+),
 
- title:
- const Text("Ajouter un film"),
+),
 
- ),
 
+],
 
 
- body:
- Padding(
+),
 
- padding:
- const EdgeInsets.all(20),
 
+),
 
 
- child:
- SingleChildScrollView(
+);
 
 
- child:
- Column(
-
-
- children:[
-
-
- field(
- "Titre",
- titleController
- ),
-
-
- field(
- "Description",
- descriptionController
- ),
-
-
- field(
- "Image URL",
- imageController
- ),
-
-
- field(
- "Note",
- ratingController
- ),
-
-
-
- ElevatedButton(
-
-
- onPressed:
- saveMovie,
-
-
- child:
- const Text("Sauvegarder"),
-
-
- ),
-
-
-
- ],
-
-
- ),
-
-
-
- ),
-
-
-
- ),
-
-
-
- );
-
-
- }
+}
 
 
 }

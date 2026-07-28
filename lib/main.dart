@@ -1,67 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'providers/theme_provider.dart';
 import 'theme/app_theme.dart';
-import 'theme/theme_provider.dart';
 import 'router/app_router.dart';
 
 
-void main() {
 
-  runApp(
+void main(){
 
-    ChangeNotifierProvider(
+runApp(
 
-      create: (_) => ThemeProvider(),
+ChangeNotifierProvider(
 
-      child: const MyApp(),
+create:(_)=>ThemeProvider(),
 
-    ),
+child:const MyApp(),
 
-  );
+)
+
+);
 
 }
 
 
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget{
+
+const MyApp({super.key});
 
 
-  const MyApp({super.key});
+@override
+Widget build(BuildContext context){
+
+final theme=
+Provider.of<ThemeProvider>(context);
 
 
-  @override
-  Widget build(BuildContext context) {
+return MaterialApp.router(
+
+debugShowCheckedModeBanner:false,
+
+theme:AppTheme.light,
+
+darkTheme:AppTheme.dark,
+
+themeMode:theme.themeMode,
 
 
-    final themeProvider =
-        Provider.of<ThemeProvider>(context);
+routerConfig:AppRouter.router,
 
 
+);
 
-    return MaterialApp.router(
-
-      debugShowCheckedModeBanner: false,
-
-
-      title: "Movie Explorer",
-
-
-      theme: AppTheme.lightTheme,
-
-
-      darkTheme: AppTheme.darkTheme,
-
-
-      themeMode: themeProvider.themeMode,
-
-
-      routerConfig: appRouter,
-
-
-    );
-
-
-  }
+}
 
 }
