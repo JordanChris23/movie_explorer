@@ -13,11 +13,11 @@ runApp(
 
 ChangeNotifierProvider(
 
-create:(_)=>ThemeProvider(),
+create: (_) => ThemeProvider(),
 
-child:const MyApp(),
+child: const MyApp(),
 
-)
+),
 
 );
 
@@ -33,26 +33,33 @@ const MyApp({super.key});
 @override
 Widget build(BuildContext context){
 
-final theme=
+
+final themeProvider =
 Provider.of<ThemeProvider>(context);
+
 
 
 return MaterialApp.router(
 
 debugShowCheckedModeBanner:false,
 
-theme:AppTheme.light,
 
-darkTheme:AppTheme.dark,
+theme: AppTheme.light,
 
-themeMode:theme.themeMode,
+darkTheme: AppTheme.dark,
 
 
-routerConfig:AppRouter.router,
+themeMode:
+themeProvider.themeMode,
+
+
+routerConfig:
+AppRouter.router,
 
 
 );
 
 }
+
 
 }

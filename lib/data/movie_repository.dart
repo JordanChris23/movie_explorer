@@ -4,25 +4,38 @@ import 'movie_data.dart';
 
 class MovieRepository {
 
-List<Movie> getMovies(){
- return movies;
-}
+
+  List<Movie> getMovies(){
+
+    return movies;
+
+  }
 
 
-Movie? getMovieById(int id){
 
-try{
+  Movie? getMovieById(int id){
 
-return movies.firstWhere(
-(movie)=>movie.id==id
-);
+    try{
 
-}catch(e){
+      return movies.firstWhere(
+        (movie)=>movie.id == id,
+      );
 
-return null;
+    }catch(e){
 
-}
+      return null;
 
-}
+    }
+
+  }
+
+
+
+  void addMovie(Movie movie){
+
+    movies.add(movie);
+
+  }
+
 
 }

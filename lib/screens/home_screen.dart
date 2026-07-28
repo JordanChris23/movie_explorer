@@ -25,18 +25,27 @@ class HomeScreen extends StatelessWidget {
           "Movie Explorer",
         ),
 
+
         actions: [
 
-          Switch(
+          Row(
+            children: [
 
-            value: themeProvider.darkMode,
+              const Icon(Icons.dark_mode),
 
-            onChanged: (value){
+              Switch(
 
-              themeProvider.toggleTheme();
+                value: themeProvider.darkMode,
 
-            },
+                onChanged: (value){
 
+                  themeProvider.toggleTheme();
+
+                },
+
+              ),
+
+            ],
           ),
 
         ],
@@ -46,10 +55,10 @@ class HomeScreen extends StatelessWidget {
 
       body: LayoutBuilder(
 
-        builder:(context,constraints){
+        builder: (context, constraints) {
 
 
-          final isTablet =
+          final bool isTablet =
               constraints.maxWidth > 600;
 
 
@@ -58,7 +67,7 @@ class HomeScreen extends StatelessWidget {
             child: SingleChildScrollView(
 
               padding: EdgeInsets.all(
-                isTablet ? 40 : 20,
+                isTablet ? 50 : 20,
               ),
 
 
@@ -68,24 +77,24 @@ class HomeScreen extends StatelessWidget {
                     MainAxisAlignment.center,
 
 
-                children:[
+                children: [
 
 
                   Icon(
 
                     Icons.movie,
 
-                    size:isTablet ? 140 : 100,
+                    size: isTablet ? 150 : 100,
 
                     color:
-                    Theme.of(context)
-                    .colorScheme
-                    .primary,
+                        Theme.of(context)
+                            .colorScheme
+                            .primary,
 
                   ),
 
 
-                  const SizedBox(height:30),
+                  const SizedBox(height: 30),
 
 
 
@@ -93,50 +102,56 @@ class HomeScreen extends StatelessWidget {
 
                     "Bienvenue dans Movie Explorer",
 
-                    textAlign:TextAlign.center,
+                    textAlign: TextAlign.center,
 
-                    style:Theme.of(context)
-                    .textTheme
-                    .headlineSmall,
+                    style:
+                        Theme.of(context)
+                            .textTheme
+                            .headlineSmall,
 
                   ),
 
 
 
-                  const SizedBox(height:20),
+                  const SizedBox(height: 20),
 
 
 
-                  const Text(
+                  Text(
 
                     "Explorez vos films préférés, "
                     "consultez les détails et ajoutez "
                     "vos propres films.",
 
-                    textAlign:TextAlign.center,
+                    textAlign: TextAlign.center,
+
+                    style:
+                        Theme.of(context)
+                            .textTheme
+                            .bodyLarge,
 
                   ),
 
 
 
-                  const SizedBox(height:40),
+                  const SizedBox(height: 40),
 
 
 
                   SizedBox(
 
-                    width:250,
+                    width: 250,
 
-                    child:ElevatedButton(
+                    child: ElevatedButton(
 
-                      onPressed:(){
+                      onPressed: () {
 
                         context.push('/movies');
 
                       },
 
 
-                      child:const Text(
+                      child: const Text(
                         "Voir les films",
                       ),
 
@@ -146,24 +161,24 @@ class HomeScreen extends StatelessWidget {
 
 
 
-                  const SizedBox(height:15),
+                  const SizedBox(height: 15),
 
 
 
                   SizedBox(
 
-                    width:250,
+                    width: 250,
 
-                    child:OutlinedButton(
+                    child: OutlinedButton(
 
-                      onPressed:(){
+                      onPressed: () {
 
                         context.push('/add');
 
                       },
 
 
-                      child:const Text(
+                      child: const Text(
                         "Ajouter un film",
                       ),
 

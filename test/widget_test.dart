@@ -1,31 +1,44 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:movie_explorer/main.dart';
-import 'package:movie_explorer/providers/theme_provider.dart';
-
-void main() {
-
-  testWidgets('Application starts', (WidgetTester tester) async {
-
-    await tester.pumpWidget(
-
-      ChangeNotifierProvider(
-        create: (_) => ThemeProvider(),
-
-        child: const MyApp(),
-
-      ),
-
-    );
+import 'package:movie_explorer/widgets/custom_button.dart';
 
 
-    await tester.pump();
+void main(){
+
+testWidgets(
+"CustomButton affiche le texte",
+(WidgetTester tester) async {
 
 
-    expect(find.byType(MaterialApp), findsOneWidget);
+await tester.pumpWidget(
 
-  });
+MaterialApp(
+
+home: Scaffold(
+
+body: CustomButton(
+
+text:"Tester",
+
+onPressed:(){},
+
+),
+
+),
+
+),
+
+);
+
+
+expect(
+find.text("Tester"),
+findsOneWidget
+);
+
+
+});
+
 
 }

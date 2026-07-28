@@ -6,19 +6,20 @@ import '../screens/add_movie_screen.dart';
 import '../screens/movie_details_screen.dart';
 
 
+
 class AppRouter {
 
 
 static final router = GoRouter(
 
-routes: [
+routes:[
 
 
 GoRoute(
 
-path: '/',
+path:'/',
 
-builder: (context,state)=>
+builder:(context,state)=>
 const HomeScreen(),
 
 ),
@@ -54,9 +55,16 @@ path:'/details/:id',
 builder:(context,state){
 
 final id =
-int.parse(
-state.pathParameters['id']!
+int.tryParse(
+state.pathParameters['id'] ?? ''
 );
+
+
+if(id==null){
+
+return const HomeScreen();
+
+}
 
 
 return MovieDetailsScreen(
@@ -67,7 +75,6 @@ id:id,
 
 
 },
-
 
 ),
 
